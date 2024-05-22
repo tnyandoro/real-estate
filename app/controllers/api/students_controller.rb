@@ -50,4 +50,3 @@ class Api::StudentsController < ApplicationController
       params.require(:student).permit(:first_name, :last_name, :face_image, :identification, :date_of_birth, :region, :program)
     end
 end
-  
