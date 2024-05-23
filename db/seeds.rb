@@ -73,6 +73,22 @@ if Rails.env.development? || Rails.env.test?
 
   puts "Created #{Certificate.count} certificates"
 
+  # Clear existing teachers
+Teacher.destroy_all
+
+# Create dummy teachers
+10.times do
+  Teacher.create!(
+    name: Faker::Name.name,
+    email: Faker::Internet.unique.email,
+    subject: Faker::Educator.subject,
+    phone_number: Faker::PhoneNumber.phone_number,
+    address: Faker::Address.full_address
+  )
+end
+
+puts "Created #{Teacher.count} teachers"
+
 end
 
 
