@@ -11,6 +11,33 @@ require 'faker'
 # Clear existing users
 
 if Rails.env.development? || Rails.env.test?
+
+   # Clear existing courses
+   Course.destroy_all
+
+   # Create dummy courses
+   course_titles = [
+    "Real Estate Fundamentals",
+    "Property Management",
+    "Real Estate Law",
+    "Real Estate Finance",
+    "Real Estate Appraisal",
+    "Real Estate Investment",
+    "Real Estate Marketing",
+    "Real Estate Ethics",
+    "Real Estate Development",
+    "Real Estate Brokerage"
+  ]
+  
+  course_titles.each do |title|
+    Course.create!(
+      title: title,
+      description: Faker::Lorem.sentence
+    )
+  end
+  
+  puts "Created #{Course.count} courses"
+  
   # Clear existing students
   Student.destroy_all
 
@@ -27,6 +54,25 @@ if Rails.env.development? || Rails.env.test?
   end
 
   puts "Created #{Student.count} students"
+
+  Certificate.destroy_all
+
+  # Retrieve existing student IDs
+  student_ids = Student.pluck(:id)
+
+  # Create dummy certificates
+  10.times do
+    Certificate.create!(
+      student_id: student_ids.sample,
+      course_id: Course.pluck(:id).sample, # Assuming you have courses seeded as well
+      certificate_number: Faker::Number.unique.number(digits: 8),
+      pdf_certificate: Faker::Internet.url,
+      png_certificate: Faker::Internet.url
+    )
+  end
+
+  puts "Created #{Certificate.count} certificates"
+
 end
 
 

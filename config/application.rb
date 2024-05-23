@@ -9,10 +9,10 @@ module ReazSchoolApi
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
-    config.encoding = "utf-8"
+    # config.encoding = "utf-8"
     # Add the UTF-8 sanitizer middleware
     config.autoload_paths += %W(#{config.root}/lib)
-    config.middleware.use Utf8Sanitizer
+    # config.middleware.use Utf8Sanitizer
 
     # Configuration for the application, engines, and railties goes here.
     #

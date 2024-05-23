@@ -1,5 +1,5 @@
 class Api::EnrollmentsController < ApplicationController
-    before_action :authenticate_user!
+    # before_action :authenticate_user!
     before_action :set_enrollment, only: [:show, :update, :destroy]
   
     # GET /api/enrollments

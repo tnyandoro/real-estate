@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     resources :courses
     resources :enrollments
     resources :certificates
+    resources :teachers
   end
   # Defines the root path route ("/")
   # root "articles#index"
