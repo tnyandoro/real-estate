@@ -1,4 +1,5 @@
 class Api::CoursesController < ApplicationController
+    before_action :authenticate_user!
     before_action :set_course, only: [:show, :update, :destroy]
   
     # GET /api/courses
