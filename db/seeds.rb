@@ -9,15 +9,23 @@ require 'faker'
 #   Character.create(name: "Luke", movie: movies.first)
 
 # Clear existing users
-Student.destroy_all
 
-# Create dummy users
-10.times do
+if Rails.env.development? || Rails.env.test?
+  # Clear existing students
+  Student.destroy_all
+
+  # Create dummy students
+  10.times do
     Student.create!(
-        email: Faker::Internet.unique.email,
-        password: 'password123',
-        password_confirmation: 'password123'
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: Faker::Date.birthday(min_age: 18, max_age: 65),
+      region: Faker::Address.state,
+      program: Faker::Educator.course_name,
+      email: Faker::Internet.unique.email
     )
+  end
+
+  puts "Created #{Student.count} students"
 end
 
-puts "Created #{Student.count} students"
