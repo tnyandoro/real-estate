@@ -1,5 +1,4 @@
 require_relative "boot"
-
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
@@ -11,7 +10,9 @@ module ReazSchoolApi
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
     config.encoding = "utf-8"
-    config.middleware.use "Utf8Sanitizer"
+    # Add the UTF-8 sanitizer middleware
+    config.autoload_paths += %W(#{config.root}/lib)
+    config.middleware.use Utf8Sanitizer
 
     # Configuration for the application, engines, and railties goes here.
     #
