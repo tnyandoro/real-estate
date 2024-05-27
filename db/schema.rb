@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_23_133416) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_23_180252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,10 +27,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_133416) do
   end
 
   create_table "courses", force: :cascade do |t|
-    t.string "title"
+    t.string "name"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "teacher_id"
   end
 
   create_table "enrollments", force: :cascade do |t|
@@ -54,6 +55,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_133416) do
     t.datetime "updated_at", null: false
     t.string "email"
     t.date "dob"
+    t.string "name"
+    t.string "phone_number"
+    t.string "address"
+  end
+
+  create_table "students_teachers", id: false, force: :cascade do |t|
+    t.bigint "teacher_id", null: false
+    t.bigint "student_id", null: false
+    t.bigint "teachers_id", null: false
+    t.bigint "students_id", null: false
+    t.index ["students_id"], name: "index_students_teachers_on_students_id"
+    t.index ["teachers_id"], name: "index_students_teachers_on_teachers_id"
   end
 
   create_table "teachers", force: :cascade do |t|
@@ -64,10 +77,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_133416) do
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "first_name"
+    t.string "last_name"
   end
 
   add_foreign_key "certificates", "courses"
   add_foreign_key "certificates", "students"
   add_foreign_key "enrollments", "courses"
   add_foreign_key "enrollments", "students"
+  add_foreign_key "students_teachers", "students", column: "students_id"
+  add_foreign_key "students_teachers", "teachers", column: "teachers_id"
 end

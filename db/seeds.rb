@@ -1,22 +1,34 @@
 require 'faker'
 
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-
-# Clear existing users
-
+# Clear existing records in development and test environments
 if Rails.env.development? || Rails.env.test?
 
-   # Clear existing courses
-   Course.destroy_all
+  # Clear existing courses
+  Course.destroy_all
 
-   # Create dummy courses
-   course_titles = [
+  # Clear existing students
+  Student.destroy_all
+
+  # Clear existing teachers
+  Teacher.destroy_all
+
+  # Clear existing enrollments
+  Enrollment.destroy_all
+
+  # Create dummy teachers
+  5.times do
+    Teacher.create!(
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      phone_number: Faker::PhoneNumber.phone_number,
+      address: Faker::Address.full_address
+    )
+  end
+
+  puts "Created #{Teacher.count} teachers"
+
+  # Create dummy courses and associate them with teachers
+  course_names = [
     "Real Estate Fundamentals",
     "Property Management",
     "Real Estate Law",
@@ -28,24 +40,26 @@ if Rails.env.development? || Rails.env.test?
     "Real Estate Development",
     "Real Estate Brokerage"
   ]
-  
-  course_titles.each do |title|
+
+  teachers = Teacher.all
+
+  course_names.each do |course_name|
     Course.create!(
-      title: title,
-      description: Faker::Lorem.sentence
+      name: course_name,
+      description: Faker::Lorem.sentence,
+      teacher: teachers.sample
     )
   end
-  
+
   puts "Created #{Course.count} courses"
-  
-  # Clear existing students
-  Student.destroy_all
 
   # Create dummy students
   10.times do
     Student.create!(
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
+      phone_number: Faker::PhoneNumber.phone_number,
+      address: Faker::Address.full_address,
       dob: Faker::Date.birthday(min_age: 18, max_age: 65),
       region: Faker::Address.state,
       program: Faker::Educator.course_name,
@@ -55,16 +69,28 @@ if Rails.env.development? || Rails.env.test?
 
   puts "Created #{Student.count} students"
 
-  Certificate.destroy_all
-
-  # Retrieve existing student IDs
+  # Retrieve existing student and course IDs
   student_ids = Student.pluck(:id)
+  course_ids = Course.pluck(:id)
+
+  # Create dummy enrollments
+  20.times do
+    Enrollment.create!(
+      student_id: student_ids.sample,
+      course_id: course_ids.sample
+    )
+  end
+
+  puts "Created #{Enrollment.count} enrollments"
+
+  # Clear existing certificates
+  Certificate.destroy_all
 
   # Create dummy certificates
   10.times do
     Certificate.create!(
       student_id: student_ids.sample,
-      course_id: Course.pluck(:id).sample, # Assuming you have courses seeded as well
+      course_id: course_ids.sample,
       certificate_number: Faker::Number.unique.number(digits: 8),
       pdf_certificate: Faker::Internet.url,
       png_certificate: Faker::Internet.url
@@ -72,23 +98,4 @@ if Rails.env.development? || Rails.env.test?
   end
 
   puts "Created #{Certificate.count} certificates"
-
-  # Clear existing teachers
-Teacher.destroy_all
-
-# Create dummy teachers
-10.times do
-  Teacher.create!(
-    name: Faker::Name.name,
-    email: Faker::Internet.unique.email,
-    subject: Faker::Educator.subject,
-    phone_number: Faker::PhoneNumber.phone_number,
-    address: Faker::Address.full_address
-  )
 end
-
-puts "Created #{Teacher.count} teachers"
-
-end
-
-

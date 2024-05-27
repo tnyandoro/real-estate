@@ -1,8 +1,8 @@
 # app/models/teacher.rb
 class Teacher < ApplicationRecord
-    validates :name, presence: true
-    validates :email, presence: true, uniqueness: true
-    validates :subject, presence: true
-    validates :phone_number, presence: true
-    validates :address, presence: true
+
+    validates :first_name, :last_name, :phone_number, :address, presence: true
+
+    has_many :courses, dependent: :destroy
+
 end
