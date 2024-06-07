@@ -2,26 +2,20 @@ require 'faker'
 
 # Clear existing records in development and test environments
 if Rails.env.development? || Rails.env.test?
-
-  # Clear existing courses
   Course.destroy_all
-
-  # Clear existing students
   Student.destroy_all
-
-  # Clear existing teachers
   Teacher.destroy_all
-
-  # Clear existing enrollments
   Enrollment.destroy_all
+  Certificate.destroy_all
 
   # Create dummy teachers
-  5.times do
+  teachers = 5.times.map do
     Teacher.create!(
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       phone_number: Faker::PhoneNumber.phone_number,
-      address: Faker::Address.full_address
+      address: Faker::Address.full_address,
+      email: Faker::Internet.unique.email
     )
   end
 
@@ -41,20 +35,18 @@ if Rails.env.development? || Rails.env.test?
     "Real Estate Brokerage"
   ]
 
-  teachers = Teacher.all
-
-  course_names.each do |course_name|
+  courses = course_names.each_with_index.map do |course_name, index|
     Course.create!(
       name: course_name,
       description: Faker::Lorem.sentence,
-      teacher: teachers.sample
+      teacher: teachers[index % teachers.size]  # Assign courses to teachers in a round-robin manner
     )
   end
 
   puts "Created #{Course.count} courses"
 
   # Create dummy students
-  10.times do
+  students = 10.times.map do
     Student.create!(
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
@@ -62,35 +54,27 @@ if Rails.env.development? || Rails.env.test?
       address: Faker::Address.full_address,
       dob: Faker::Date.birthday(min_age: 18, max_age: 65),
       region: Faker::Address.state,
-      program: Faker::Educator.course_name,
       email: Faker::Internet.unique.email
     )
   end
 
   puts "Created #{Student.count} students"
 
-  # Retrieve existing student and course IDs
-  student_ids = Student.pluck(:id)
-  course_ids = Course.pluck(:id)
-
   # Create dummy enrollments
-  20.times do
+  students.each do |student|
     Enrollment.create!(
-      student_id: student_ids.sample,
-      course_id: course_ids.sample
+      student: student,
+      course: courses.sample
     )
   end
 
   puts "Created #{Enrollment.count} enrollments"
 
-  # Clear existing certificates
-  Certificate.destroy_all
-
   # Create dummy certificates
   10.times do
     Certificate.create!(
-      student_id: student_ids.sample,
-      course_id: course_ids.sample,
+      student: students.sample,
+      course: courses.sample,
       certificate_number: Faker::Number.unique.number(digits: 8),
       pdf_certificate: Faker::Internet.url,
       png_certificate: Faker::Internet.url

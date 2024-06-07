@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :enrollments
     resources :certificates
     resources :teachers
+    resources :enrollments, only: [:index, :show, :create, :destroy]
   end
   # Defines the root path route ("/")
   # root "articles#index"

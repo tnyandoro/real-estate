@@ -72,7 +72,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_180252) do
   create_table "teachers", force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.string "subject"
+    t.string "course"
     t.string "phone_number"
     t.string "address"
     t.datetime "created_at", null: false
