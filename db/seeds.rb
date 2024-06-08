@@ -52,7 +52,7 @@ if Rails.env.development? || Rails.env.test?
       last_name: Faker::Name.last_name,
       phone_number: Faker::PhoneNumber.phone_number,
       address: Faker::Address.full_address,
-      dob: Faker::Date.birthday(min_age: 18, max_age: 65),
+      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
       region: Faker::Address.state,
       email: Faker::Internet.unique.email
     )
