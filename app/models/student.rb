@@ -4,4 +4,8 @@ class Student < ApplicationRecord
     has_many :courses, through: :enrollments
   
     validates :first_name, :last_name, :phone_number, :address, :date_of_birth, :region, :email, presence: true
+
+    def name
+        "#{first_name} #{last_name}"
+    end
 end

@@ -1,3 +1,4 @@
+# app/db/seeds.rb
 require 'faker'
 
 # Clear existing records in development and test environments
@@ -45,30 +46,41 @@ if Rails.env.development? || Rails.env.test?
 
   puts "Created #{Course.count} courses"
 
-  # Create dummy students
+  # Generate unique identification IDs
+  used_identifications = Set.new
+
+  generate_unique_identification = -> do
+    loop do
+      identification = "#{Faker::Number.unique.number(digits: 2)}-#{Faker::Number.unique.number(digits: 6)}-#{Faker::Alphanumeric.alpha(number: 1)}-#{Faker::Number.unique.number(digits: 2)}"
+      return identification unless used_identifications.include?(identification)
+    end
+  end
+
+  # Create dummy students and enroll them in courses
   students = 10.times.map do
-    Student.create!(
+    student = Student.create!(
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       phone_number: Faker::PhoneNumber.phone_number,
       address: Faker::Address.full_address,
       date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 65),
       region: Faker::Address.state,
-      email: Faker::Internet.unique.email
+      email: Faker::Internet.unique.email,
+      identification: generate_unique_identification.call
     )
+
+    # Enroll the student in a random number of courses (between 3 and 10)
+    (3..10).to_a.sample.times do
+      Enrollment.create!(
+        student: student,
+        course: courses.sample
+      )
+    end
+
+    student
   end
 
-  puts "Created #{Student.count} students"
-
-  # Create dummy enrollments
-  students.each do |student|
-    Enrollment.create!(
-      student: student,
-      course: courses.sample
-    )
-  end
-
-  puts "Created #{Enrollment.count} enrollments"
+  puts "Created #{Student.count} students and enrolled them in courses"
 
   # Create dummy certificates
   10.times do
